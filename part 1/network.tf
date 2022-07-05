@@ -41,7 +41,7 @@ resource "azurerm_public_ip" "public_ip_demo" {
 resource "azurerm_network_interface" "demo_network_interface" {
   name                = "${var.prefix}-nw-1"
   resource_group_name = azurerm_resource_group.demo_resource_group.name
-  location = var.location
+  location            = var.location
 
   ip_configuration {
     name                          = "${var.prefix}-ip-1"
