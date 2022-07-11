@@ -40,23 +40,23 @@ resource "azurerm_virtual_machine" "demo-vm-instance" {
 # scale set 
 
 
-source "azurerm_virtual_machine_scale_set" "scale_set" {
+resource "azurerm_virtual_machine_scale_set" "scale_set" {
   name                = "${var.prefix}-vm-scale-set"
   location            = var.location
   resource_group_name = azurerm_resource_group.demo_resource_group.name
 
   # automatic rolling upgrade
   automatic_os_upgrade = true
-  upgrade_policy       = "Rolling"
+  upgrade_policy_mode       = "Rolling"
 
   rolling_upgrade_policy {
     max_batch_instance_percent               = 20
     max_unhealthy_instance_percent           = 20
-    max_unheadlthy_upgraded_instance_percent = 5
-    pause_time_between_batches               = "PT05"
+    max_unhealthy_upgraded_instance_percent = 5
+    pause_time_between_batches               = "PT0S"
   }
 
-  health_probe_id = aazurerm_lb_probe.lb_probe.id
+  health_probe_id = azurerm_lb_probe.lb_probe.id
 
   zones = var.zones
 
@@ -108,7 +108,7 @@ source "azurerm_virtual_machine_scale_set" "scale_set" {
     ip_configuration {
       name                                   = "IPConfiguration"
       primary                                = true
-      subnet_id                              = azurerm_subnet.subnet_demo.id
+      subnet_id                              = azurerm_subnet.app_demo_subnet.id
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id]
       load_balancer_inbound_nat_rules_ids    = [azurerm_lb_nat_pool.lbnatpool.id]
     }
