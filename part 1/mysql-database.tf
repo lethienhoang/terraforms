@@ -6,13 +6,13 @@ resource "azurerm_mysql_server" "demo_mysql_server_instance" {
   sku_name = "GP_Gen5_2"
 
   storage_mb                   = 5120
-  backup_retention_days       = 7
+  backup_retention_days        = 7
   geo_redundant_backup_enabled = false
 
-  administrator_login     = "mysqladmin"
+  administrator_login          = "mysqladmin"
   administrator_login_password = "Pass@word1111"
-  version                 = "5.7"
-  ssl_enforcement_enabled = true
+  version                      = "5.7"
+  ssl_enforcement_enabled      = true
 }
 
 resource "azurerm_mysql_database" "demo_db" {
@@ -34,7 +34,7 @@ resource "azurerm_mysql_virtual_network_rule" "demo_mysql_subnet_vnet_rule" {
   name                = "${var.prefix}-mysql-db-internal-vnet-rule"
   resource_group_name = azurerm_resource_group.demo_resource_group.name
   server_name         = azurerm_mysql_server.demo_mysql_server_instance.name
-  subnet_id           = azurerm_subnet.internal_database_demo_subnet.id
+  subnet_id           = azurerm_subnet.database_demo_intance_subnet.id
 }
 
 resource "azurerm_mysql_firewall_rule" "demo_mysql_allo_demo_instance" {

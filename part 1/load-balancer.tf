@@ -5,7 +5,7 @@ resource "azurerm_lb" "lb" {
   resource_group_name = azurerm_resource_group.demo_resource_group.name
 
   frontend_ip_configuration {
-    name                 = "${var.prefix}-vm-PublicIPAddress"
+    name                 = "PublicIPAddress"
     public_ip_address_id = azurerm_public_ip.public_ip_demo.id
   }
 }
