@@ -2,21 +2,37 @@ resource "azurerm_virtual_network" "demo_virtual_network" {
   name                = "${var.prefix}-virtual-network"
   location            = var.location
   resource_group_name = azurerm_resource_group.demo_resource_group.name
-  address_space       = ["10.10.0.0/24"]
+  address_space       = ["10.0.0.0/24"]
+}
+
+module "subnet_addrs" {
+  source = "hashicorp/subnets/cidr"
+  version = "1.0.0"
+  base_cidr_block = azurerm_virtual_network.demo_virtual_network.address_space[0]
+  networks = [
+    { 
+      name = "vm"
+      new_bits = 2
+    },
+    { 
+      name = "data"
+      new_bits = 2
+    }
+  ]
 }
 
 resource "azurerm_subnet" "app_demo_subnet" {
   name                 = "${var.prefix}-app-subnet-1"
   resource_group_name  = azurerm_resource_group.demo_resource_group.name
   virtual_network_name = azurerm_virtual_network.demo_virtual_network.name
-  address_prefixes     = ["10.10.1.0/24"]
+  address_prefixes     = [module.subnet_addrs.network_cidr_blocks["vm"]]
 }
 
 resource "azurerm_subnet" "database_demo_intance_subnet" {
   name                 = "${var.prefix}-database-subnet-1"
   resource_group_name  = azurerm_resource_group.demo_resource_group.name
   virtual_network_name = azurerm_virtual_network.demo_virtual_network.name
-  address_prefixes     = ["10.10.2.0/24"]
+  address_prefixes     = [module.subnet_addrs.network_cidr_blocks["data"]]
   service_endpoints    = ["Microsoft.Sql"]
 }
 
